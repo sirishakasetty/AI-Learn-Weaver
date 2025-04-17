@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+streamlit
+requests
+yt_dlp
+newspaper3k
+PyMuPDF
+crewai
+transformers
+accelerate
+sentence-transformers
+markdown2
+fpdf
+openai-whisper
+pyttsx3
