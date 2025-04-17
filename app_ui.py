@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 import warnings
 from agents.scraper import scrape_article_text
 from agents.pdf_scraper import extract_text_from_pdf
@@ -9,6 +8,10 @@ from agents.example_generator import generate_examples_with_gemma
 from agents.compiler import compile_to_markdown, convert_markdown_to_pdf
 from rag.qna_rag import chunk_text, build_faiss_index, retrieve_context, ask_question
 from voice.voice_input import record_and_transcribe  # 🎤 Voice input
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 
 warnings.filterwarnings("ignore", category=UserWarning)
 st.set_page_config(page_title="LearnWeaver", page_icon="🧠", layout="centered")
