@@ -9,3 +9,4 @@ newspaper3k
 lxml[html_clean]
 pyttsx3
 SpeechRecognition
+yt-dlp
