@@ -3,11 +3,7 @@ import openai
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def generate_summary_with_gpt(text, grade_level="Undergrad", output_format="textbook"):
-    """
-    Generate a structured educational summary using GPT from OpenAI.
-    """
-
+def generate_summary_with_openai(text, grade_level="Undergrad", output_format="textbook"):
     clean_text = text[:3900]
 
     prompt = f"""
