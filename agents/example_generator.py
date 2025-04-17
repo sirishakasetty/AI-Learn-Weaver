@@ -1,24 +1,28 @@
-import subprocess
+# agents/example_generator.py
 
-def generate_examples_with_gemma(topic_text, grade_level="college"):
-    """
-    Uses Gemma via Ollama to generate practical examples and questions.
-    """
+import openai
+import os
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+def generate_examples_with_openai(summary, grade_level="Undergrad"):
     prompt = f"""
-You are an AI that creates practice content for students. Based on the topic below, generate the following for a {grade_level} level:
+You are an expert educator. Based on the following educational summary, generate 3–5 **exam-style questions or real-world examples** that help students at the {grade_level} level practice the topic.
 
-1. 2 Fill-in-the-blank questions
-2. 2 Multiple-choice questions (with 4 options and correct answer)
-3. 2 Conceptual questions for critical thinking
+--- SUMMARY ---
+{summary}
+--- END ---
 
---- Topic Content ---
-{topic_text}
+Your output should be in plain text. Label the questions or examples clearly.
 """
 
-    result = subprocess.run(
-        ["ollama", "run", "gemma:7b", prompt],
-        capture_output=True,
-        text=True
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You generate practice questions and examples for students."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7
     )
 
-    return result.stdout.strip()
+    return response["choices"][0]["message"]["content"].strip()
