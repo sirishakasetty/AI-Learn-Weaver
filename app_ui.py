@@ -4,7 +4,7 @@ import os
 import sys
 from agents.scraper import scrape_article_text
 from agents.pdf_scraper import extract_text_from_pdf
-from llm.gemma_runner import generate_summary_with_gemma
+from llm.gemma_runner import generate_summary_with_openai  # ✅ Updated to use OpenAI
 from agents.formatter import format_summary
 from agents.example_generator import generate_examples_with_gemma
 from agents.compiler import compile_to_markdown, convert_markdown_to_pdf
@@ -77,43 +77,40 @@ if st.session_state.raw_text:
     style = st.radio("Choose Format", ["Textbook", "Notebook"])
 
     if st.button("🧠 Generate Content"):
-        if IS_CLOUD:
-            st.error("🚫 This feature requires Gemma via Ollama which only works locally. Please run locally to use this feature.")
-        else:
-            with st.spinner("🔎 Summarizing with Gemma..."):
-                summary = generate_summary_with_gemma(st.session_state.raw_text, grade_level=grade, output_format=style.lower())
+        with st.spinner("🔎 Summarizing with OpenAI..."):
+            summary = generate_summary_with_openai(st.session_state.raw_text, grade_level=grade, output_format=style.lower())
 
-            with st.spinner("🧪 Creating Examples..."):
-                examples = generate_examples_with_gemma(summary, grade_level=grade)
+        with st.spinner("🧪 Creating Examples..."):
+            examples = generate_examples_with_gemma(summary, grade_level=grade)
 
-            with st.spinner("🖋️ Formatting Output..."):
-                formatted = format_summary(summary, output_format=style.lower(), grade_level=grade)
+        with st.spinner("🖋️ Formatting Output..."):
+            formatted = format_summary(summary, output_format=style.lower(), grade_level=grade)
 
-            with st.spinner("📄 Compiling to PDF..."):
-                os.makedirs("output/markdown", exist_ok=True)
-                os.makedirs("output/pdf", exist_ok=True)
-                md_path = compile_to_markdown(formatted, examples, output_format=style.lower(), filename="learnweaver_output")
-                pdf_path = convert_markdown_to_pdf(md_path)
+        with st.spinner("📄 Compiling to PDF..."):
+            os.makedirs("output/markdown", exist_ok=True)
+            os.makedirs("output/pdf", exist_ok=True)
+            md_path = compile_to_markdown(formatted, examples, output_format=style.lower(), filename="learnweaver_output")
+            pdf_path = convert_markdown_to_pdf(md_path)
 
-            st.success("🎉 Learning Material Generated!")
+        st.success("🎉 Learning Material Generated!")
 
-            # ---- Preview Output ----
-            st.markdown("## 🧾 Final Output Preview")
-            st.text_area("📘 Content", value=formatted + "\n\n" + examples, height=400)
+        # ---- Preview Output ----
+        st.markdown("## 🧾 Final Output Preview")
+        st.text_area("📘 Content", value=formatted + "\n\n" + examples, height=400)
 
-            # ---- Download PDF ----
-            st.download_button("📥 Download PDF", data=open(pdf_path, "rb"), file_name="LearnWeaver_Output.pdf")
+        # ---- Download PDF ----
+        st.download_button("📥 Download PDF", data=open(pdf_path, "rb"), file_name="LearnWeaver_Output.pdf")
 
-            # ---- Setup Q&A State ----
-            with st.spinner("🔗 Setting up Agentic Q&A..."):
-                combined_text = formatted + "\n\n" + examples
-                chunks = chunk_text(combined_text)
-                index, embeddings, stored_chunks = build_faiss_index(chunks)
-                st.session_state.qa_chunks = stored_chunks
-                st.session_state.qa_index = index
-                st.session_state.qa_embeddings = embeddings
-                st.session_state.qna_ready = True
-                st.session_state.qa_text = combined_text
+        # ---- Setup Q&A State ----
+        with st.spinner("🔗 Setting up Agentic Q&A..."):
+            combined_text = formatted + "\n\n" + examples
+            chunks = chunk_text(combined_text)
+            index, embeddings, stored_chunks = build_faiss_index(chunks)
+            st.session_state.qa_chunks = stored_chunks
+            st.session_state.qa_index = index
+            st.session_state.qa_embeddings = embeddings
+            st.session_state.qna_ready = True
+            st.session_state.qa_text = combined_text
 
 # ---- Agentic Q&A Section ----
 if st.session_state.qna_ready:
