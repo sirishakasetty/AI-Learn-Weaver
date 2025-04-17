@@ -6,7 +6,7 @@ from agents.scraper import scrape_article_text
 from agents.pdf_scraper import extract_text_from_pdf
 from llm.gemma_runner import generate_summary_with_openai  # ✅ Updated to use OpenAI
 from agents.formatter import format_summary
-from agents.example_generator import generate_examples_with_gemma
+from agents.example_generator import generate_examples_with_openai
 from agents.compiler import compile_to_markdown, convert_markdown_to_pdf
 from rag.qna_rag import chunk_text, build_faiss_index, retrieve_context, ask_question
 from voice.voice_input import record_and_transcribe  # 🎤 Voice input
@@ -81,7 +81,7 @@ if st.session_state.raw_text:
             summary = generate_summary_with_openai(st.session_state.raw_text, grade_level=grade, output_format=style.lower())
 
         with st.spinner("🧪 Creating Examples..."):
-            examples = generate_examples_with_gemma(summary, grade_level=grade)
+            examples = generate_examples_with_openai(summary, grade_level=grade)
 
         with st.spinner("🖋️ Formatting Output..."):
             formatted = format_summary(summary, output_format=style.lower(), grade_level=grade)
