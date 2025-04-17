@@ -10,3 +10,4 @@ pyttsx3
 speechrecognition
 lxml_html_clean
 markdown2
+fpdf
