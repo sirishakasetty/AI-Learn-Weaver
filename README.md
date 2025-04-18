@@ -1,39 +1,39 @@
-# AI-Learn-Weaver
+# 🧠 LearnWeaver – AI Textbook & Notes Generator
 
-
-# 🧠 LearnWeaver — AI-Powered Textbook & Notes Generator
-
-LearnWeaver is an intelligent education assistant that generates structured learning material from PDFs and article/newsletter links. It produces textbook-style or notebook-style content, complete with examples and an interactive Q&A tutor mode — all powered by local LLMs and retrieval-based techniques.
+LearnWeaver is an AI-powered Streamlit app that transforms PDFs, article links, or newsletters into structured educational content. It generates chapter-style summaries, practical examples, and includes a Q&A tutor mode — tailored for learners from Grade 2 to PhD.
 
 ---
 
 ## 🚀 Features
 
-✅ Upload **multiple PDFs** and **article/newsletter links**  
-✅ Automatically extract and summarize raw educational content using **Gemma via Ollama**  
-✅ Generate **examples, exercises, and real-world problems**  
-✅ Format output in **Textbook** or **Notebook** style  
-✅ Export final content as **PDF**  
-✅ Built-in **Q&A Tutor Mode** using FAISS + local Gemma  
-✅ 🎤 Voice-based question input using **Whisper**  
-✅ No external API required — runs **fully local** with Ollama
+- 📄 **Upload PDFs or Enter Article Links**  
+- 🧠 **Generate Textbook or Notebook-Style Summaries**  
+- 🧪 **Real-World and Exam-Style Examples**  
+- 🗣️ **Voice Input Support for Q&A**  
+- ❓ **Ask Questions with Agentic Retrieval**  
+- 📥 **Download as PDF**  
 
 ---
 
-## 🧪 Technologies Used
+## 🧰 Tech Stack
 
-| Component          | Technology / Library               |
-|--------------------|------------------------------------|
-| LLM                | [Gemma 7B](https://ollama.com/library/gemma) via Ollama |
-| Embeddings         | Sentence-Transformers              |
-| Vector DB          | FAISS                              |
-| Voice Input        | Whisper + SpeechRecognition        |
-| PDF Parsing        | PyMuPDF                            |
-| Web Scraping       | newspaper3k + yt_dlp               |
-| Frontend           | Streamlit                          |
-| Output Format      | Markdown + PDF                     |
-| Q&A Search         | Retrieval-Augmented Generation (RAG) |
-| Deployment (Demo)  | Streamlit Cloud                    |
+| Component      | Technology                         |
+|----------------|------------------------------------|
+| LLM            | OpenAI GPT-3.5 Turbo (API)         |
+| Interface      | Streamlit                          |
+| Voice Input    | Whisper, Pyttsx3                   |
+| Document Parsing | PyMuPDF, newspaper3k             |
+| Vector DB      | FAISS + Sentence Transformers      |
+| Output         | Markdown, PDF (FPDF, markdown2)    |
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone this repo:
+```bash
+git clone https://github.com/sirishakasetty/AI-Learn-Weaver.git
+cd AI-Learn-Weaver
 
 ---
 
@@ -44,7 +44,7 @@ LearnWeaver is an intelligent education assistant that generates structured lear
 > ✅ Ask questions via text or mic  
 > ✅ Download final PDF
 
-Checkout the app: https://ai-learn-weaver-gzzmlx7xeloq327qldqtha.streamlit.app/
+Checkout the app:(https://ai-learn-weaver-gzzmlx7xeloq327qldqtha.streamlit.app/)
 
 ---
 
@@ -64,32 +64,50 @@ Checkout the app: https://ai-learn-weaver-gzzmlx7xeloq327qldqtha.streamlit.app/
 conda create -n learnweaver python=3.10
 conda activate learnweaver
 
+🔑 OpenAI Key Setup
+Get your key from https://platform.openai.com/account/api-keys
+
+Create a .streamlit/secrets.toml file:
+OPENAI_API_KEY = "your-openai-key"
+
+
+
 # Install dependencies
 pip install -r requirements.txt
 
-# Make sure Ollama + Gemma is installed
-ollama run gemma:7b
+📦 Folder Structure
 LearnWeaver/
 │
-├── interface/            # Streamlit UI
-├── agents/               # Scrapers, compilers, formatter
-├── llm/                  # Gemma runners
-├── rag/                  # Q&A RAG pipeline
-├── voice/                # Whisper input handler
-├── output/               # Generated markdown + PDFs
-├── tools/                # Tool wrappers (LLM tools for CrewAI - WIP)
-├── crew/                 # CrewAI config & agents (WIP)
-├── requirements.txt
-└── README.md
+├── interface/
+│   └── app_ui.py
+│
+├── agents/
+│   ├── scraper.py
+│   ├── pdf_scraper.py
+│   ├── example_generator.py
+│   ├── formatter.py
+│   └── compiler.py
+│
+├── llm/
+│   └── gemma_runner.py  <-- (Now uses OpenAI)
+│
+├── rag/
+│   └── qna_rag.py
+│
+├── voice/
+│   └── voice_input.py
+│
+└── output/
+    ├── markdown/
+    └── pdf/
+
 🔮 Coming Soon
-✅ CrewAI Agent Orchestration
+🏁 Future Roadmap
+✅ Add OpenAI fallback if Ollama not available
 
-Multi-agent pipeline to handle summarization, example generation, formatting using CrewAI
+🔁 Integrate CrewAI agents
 
-Fully modular, pluggable tool-based workflows
+📱 Launch mobile version via React Native
 
-✅ Mobile App (React Native)
+📊 Feedback logging and dashboard
 
-Seamless mobile deployment with voice-driven question answering
-
-Save, share, and bookmark custom textbooks
