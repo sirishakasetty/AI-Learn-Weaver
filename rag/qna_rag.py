@@ -1,11 +1,11 @@
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
-import openai
+from openai import OpenAI
 import os
 
 # Load OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Load embedding model once
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -39,25 +39,27 @@ def retrieve_context(question, index, chunks, embeddings, top_k=3):
 
 
 def ask_question(question, retrieved_chunks):
-    """Ask OpenAI a question using the retrieved context."""
-    context = "\n\n".join(retrieved_chunks)
-    prompt = f"""
-You are a helpful AI tutor. Based on the following context, answer the user's question.
+    """Ask OpenAI a question using retrieved context."""
+    context = "\n".join(retrieved_chunks)
 
---- CONTEXT ---
+    prompt = f"""
+You are an educational tutor. Use the context below to answer the question clearly and concisely.
+
+--- Context ---
 {context}
 
---- QUESTION ---
+--- Question ---
 {question}
 """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You answer questions using only the given context. Be concise and clear."},
+            {"role": "system", "content": "You are a helpful AI tutor."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.5
+        temperature=0.7
     )
 
+    return response.choices[0].message.content.strip()
     return response["choices"][0]["message"]["content"].strip()
